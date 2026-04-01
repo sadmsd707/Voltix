@@ -1,0 +1,1453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CircuitHive — Electronics & Robotics Parts</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #080c10;
+    --surface: #0e1520;
+    --surface2: #141d2b;
+    --border: #1e2d42;
+    --accent: #00e5ff;
+    --accent2: #ff6b35;
+    --accent3: #7fff6b;
+    --text: #e2eaf5;
+    --muted: #6b7f99;
+    --card: #0f1a28;
+    --glow: 0 0 20px rgba(0,229,255,0.25);
+    --font-head: 'Orbitron', monospace;
+    --font-body: 'DM Sans', sans-serif;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+  
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 3px; }
+
+  /* CIRCUIT BACKGROUND */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,229,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,229,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ─── NAVBAR ─── */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(8,12,16,0.92);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 5%;
+    display: flex;
+    align-items: center;
+    height: 64px;
+    gap: 2rem;
+  }
+
+  .logo {
+    font-family: var(--font-head);
+    font-size: 1.3rem;
+    font-weight: 900;
+    color: var(--accent);
+    text-decoration: none;
+    letter-spacing: 2px;
+    text-shadow: var(--glow);
+    flex-shrink: 0;
+  }
+  .logo span { color: var(--accent2); }
+
+  .search-bar {
+    flex: 1;
+    max-width: 520px;
+    display: flex;
+    align-items: center;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: border-color .2s;
+  }
+  .search-bar:focus-within { border-color: var(--accent); box-shadow: var(--glow); }
+  .search-bar input {
+    flex: 1;
+    background: none;
+    border: none;
+    outline: none;
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    padding: 0.6rem 1rem;
+  }
+  .search-bar input::placeholder { color: var(--muted); }
+  .search-bar button {
+    background: var(--accent);
+    border: none;
+    color: var(--bg);
+    padding: 0.6rem 1.2rem;
+    font-size: 1rem;
+    cursor: pointer;
+    font-weight: 700;
+    transition: background .2s;
+  }
+  .search-bar button:hover { background: #00c8e0; }
+
+  .nav-links {
+    display: flex;
+    gap: 0.5rem;
+    margin-left: auto;
+    align-items: center;
+  }
+  .nav-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.85rem;
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    transition: all .2s;
+  }
+  .nav-links a:hover { color: var(--accent); background: rgba(0,229,255,0.08); }
+
+  .cart-btn {
+    background: var(--accent);
+    color: var(--bg) !important;
+    font-weight: 700 !important;
+    padding: 0.5rem 1.2rem !important;
+    border-radius: 8px !important;
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .cart-btn .badge {
+    background: var(--accent2);
+    color: white;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    font-size: 0.7rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+  }
+
+  /* ─── CATEGORY BAR ─── */
+  .cat-bar {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 5%;
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+    position: relative;
+    z-index: 1;
+  }
+  .cat-bar::-webkit-scrollbar { display: none; }
+  .cat-bar a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.82rem;
+    font-weight: 500;
+    padding: 0.75rem 1.2rem;
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+    transition: all .2s;
+    letter-spacing: 0.3px;
+  }
+  .cat-bar a:hover, .cat-bar a.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+
+  /* ─── HERO ─── */
+  .hero {
+    position: relative;
+    z-index: 1;
+    padding: 5rem 5%;
+    display: flex;
+    align-items: center;
+    gap: 4rem;
+    min-height: 480px;
+    overflow: hidden;
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute;
+    right: -100px;
+    top: -100px;
+    width: 600px;
+    height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0,229,255,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-content { flex: 1; max-width: 560px; }
+  
+  .hero-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(0,229,255,0.1);
+    border: 1px solid rgba(0,229,255,0.3);
+    color: var(--accent);
+    font-size: 0.78rem;
+    font-family: var(--font-head);
+    letter-spacing: 2px;
+    padding: 0.35rem 1rem;
+    border-radius: 4px;
+    margin-bottom: 1.5rem;
+  }
+
+  .hero h1 {
+    font-family: var(--font-head);
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    font-weight: 900;
+    line-height: 1.1;
+    margin-bottom: 1.2rem;
+    letter-spacing: 1px;
+  }
+  .hero h1 .hl { color: var(--accent); text-shadow: var(--glow); }
+  .hero h1 .hl2 { color: var(--accent2); }
+
+  .hero p {
+    color: var(--muted);
+    font-size: 1.05rem;
+    line-height: 1.7;
+    margin-bottom: 2rem;
+  }
+
+  .hero-btns { display: flex; gap: 1rem; flex-wrap: wrap; }
+
+  .btn-primary {
+    background: var(--accent);
+    color: var(--bg);
+    border: none;
+    padding: 0.85rem 2rem;
+    font-family: var(--font-head);
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all .25s;
+    text-decoration: none;
+    display: inline-block;
+  }
+  .btn-primary:hover { background: #00c8e0; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,229,255,0.35); }
+
+  .btn-outline {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border);
+    padding: 0.85rem 2rem;
+    font-family: var(--font-head);
+    font-size: 0.82rem;
+    letter-spacing: 1.5px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all .25s;
+    text-decoration: none;
+    display: inline-block;
+  }
+  .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+
+  .hero-stats {
+    display: flex;
+    gap: 2.5rem;
+    margin-top: 2.5rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border);
+  }
+  .stat-item { }
+  .stat-num { font-family: var(--font-head); font-size: 1.5rem; font-weight: 900; color: var(--accent); }
+  .stat-label { font-size: 0.78rem; color: var(--muted); margin-top: 0.2rem; letter-spacing: 0.5px; }
+
+  /* Circuit board illustration */
+  .hero-visual {
+    flex: 0 0 380px;
+    position: relative;
+    z-index: 1;
+  }
+  .hero-visual svg { width: 100%; height: auto; }
+
+  /* ─── SECTION HEADING ─── */
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 1.8rem;
+    padding: 0 5%;
+  }
+  .section-head h2 {
+    font-family: var(--font-head);
+    font-size: 1.1rem;
+    letter-spacing: 2px;
+    font-weight: 700;
+  }
+  .section-head h2 span { color: var(--accent); }
+  .section-head a { color: var(--accent); font-size: 0.82rem; text-decoration: none; }
+  .section-head a:hover { text-decoration: underline; }
+
+  /* ─── CATEGORY CARDS ─── */
+  .categories {
+    padding: 3rem 5%;
+    position: relative;
+    z-index: 1;
+  }
+
+  .cat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 1rem;
+  }
+
+  .cat-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem 1rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all .25s;
+    text-decoration: none;
+    color: var(--text);
+    display: block;
+  }
+  .cat-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0,229,255,0.12);
+  }
+  .cat-icon {
+    font-size: 2.2rem;
+    margin-bottom: 0.8rem;
+    display: block;
+  }
+  .cat-card h3 { font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem; }
+  .cat-card p { font-size: 0.72rem; color: var(--muted); }
+
+  /* ─── PROMO BANNER ─── */
+  .promo-banner {
+    margin: 0 5% 3rem;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #0e2035 0%, #0a1520 50%, #0e1a10 100%);
+    border: 1px solid var(--border);
+    padding: 2.5rem 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+  }
+  .promo-banner::before {
+    content: '⚡';
+    position: absolute;
+    right: 3rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 8rem;
+    opacity: 0.05;
+  }
+  .promo-banner h3 {
+    font-family: var(--font-head);
+    font-size: 1.5rem;
+    color: var(--accent3);
+    text-shadow: 0 0 20px rgba(127,255,107,0.3);
+    margin-bottom: 0.4rem;
+  }
+  .promo-banner p { color: var(--muted); font-size: 0.9rem; }
+  .promo-timer {
+    display: flex;
+    gap: 1rem;
+  }
+  .timer-block {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.6rem 1rem;
+    text-align: center;
+    min-width: 60px;
+  }
+  .timer-block .num { font-family: var(--font-head); font-size: 1.4rem; color: var(--accent); }
+  .timer-block .lbl { font-size: 0.65rem; color: var(--muted); letter-spacing: 1px; }
+
+  /* ─── PRODUCTS GRID ─── */
+  .products-section {
+    padding: 1rem 0 3rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1.2rem;
+    padding: 0 5%;
+  }
+
+  .product-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all .3s;
+    cursor: pointer;
+    position: relative;
+  }
+  .product-card:hover {
+    border-color: rgba(0,229,255,0.4);
+    transform: translateY(-5px);
+    box-shadow: 0 16px 40px rgba(0,0,0,0.4), 0 0 0 1px rgba(0,229,255,0.1);
+  }
+
+  .product-img {
+    aspect-ratio: 1;
+    background: var(--surface2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .product-img::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 50% 80%, rgba(0,229,255,0.06), transparent 60%);
+  }
+
+  .product-badge {
+    position: absolute;
+    top: 0.6rem;
+    left: 0.6rem;
+    background: var(--accent2);
+    color: white;
+    font-size: 0.68rem;
+    font-weight: 700;
+    padding: 0.25rem 0.6rem;
+    border-radius: 4px;
+    letter-spacing: 0.5px;
+  }
+  .product-badge.new { background: var(--accent3); color: var(--bg); }
+  .product-badge.sale { background: var(--accent2); }
+
+  .product-wishlist {
+    position: absolute;
+    top: 0.6rem;
+    right: 0.6rem;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all .2s;
+    opacity: 0;
+    z-index: 2;
+  }
+  .product-card:hover .product-wishlist { opacity: 1; }
+  .product-wishlist:hover { background: var(--accent2); border-color: var(--accent2); }
+
+  .product-info { padding: 1rem; }
+  .product-cat { font-size: 0.7rem; color: var(--accent); letter-spacing: 1px; font-weight: 600; margin-bottom: 0.3rem; text-transform: uppercase; }
+  .product-name { font-size: 0.9rem; font-weight: 600; margin-bottom: 0.5rem; line-height: 1.3; }
+  .product-rating {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-bottom: 0.7rem;
+  }
+  .stars { color: #f5a623; font-size: 0.75rem; }
+  .rating-count { font-size: 0.72rem; color: var(--muted); }
+
+  .product-price {
+    display: flex;
+    align-items: baseline;
+    gap: 0.6rem;
+    margin-bottom: 0.8rem;
+  }
+  .price-curr { font-family: var(--font-head); font-size: 1.1rem; font-weight: 700; color: var(--text); }
+  .price-orig { font-size: 0.8rem; color: var(--muted); text-decoration: line-through; }
+  .price-off { font-size: 0.75rem; color: var(--accent3); font-weight: 600; }
+
+  .add-to-cart {
+    width: 100%;
+    background: transparent;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    padding: 0.6rem;
+    border-radius: 7px;
+    font-family: var(--font-head);
+    font-size: 0.73rem;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all .2s;
+    font-weight: 700;
+  }
+  .add-to-cart:hover { background: var(--accent); color: var(--bg); }
+  .add-to-cart.added { background: var(--accent); color: var(--bg); }
+
+  /* ─── FEATURES BAR ─── */
+  .features-bar {
+    display: flex;
+    gap: 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    padding: 0 5%;
+    margin: 2rem 0;
+    position: relative;
+    z-index: 1;
+    flex-wrap: wrap;
+  }
+  .feature-item {
+    flex: 1;
+    min-width: 180px;
+    padding: 1.5rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    border-right: 1px solid var(--border);
+  }
+  .feature-item:last-child { border-right: none; }
+  .feature-icon { font-size: 1.6rem; flex-shrink: 0; }
+  .feature-text h4 { font-size: 0.85rem; font-weight: 600; margin-bottom: 0.2rem; }
+  .feature-text p { font-size: 0.75rem; color: var(--muted); }
+
+  /* ─── BRANDS ─── */
+  .brands-section {
+    padding: 3rem 5%;
+    position: relative;
+    z-index: 1;
+  }
+  .brands-row {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+  }
+  .brand-chip {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.8rem 1.8rem;
+    font-family: var(--font-head);
+    font-size: 0.8rem;
+    color: var(--muted);
+    letter-spacing: 1.5px;
+    transition: all .2s;
+    cursor: pointer;
+  }
+  .brand-chip:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ─── CART SIDEBAR ─── */
+  .cart-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    z-index: 200;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .3s;
+  }
+  .cart-overlay.open { opacity: 1; pointer-events: all; }
+
+  .cart-sidebar {
+    position: fixed;
+    top: 0;
+    right: -420px;
+    width: 400px;
+    height: 100vh;
+    background: var(--surface);
+    border-left: 1px solid var(--border);
+    z-index: 201;
+    transition: right .35s cubic-bezier(.4,0,.2,1);
+    display: flex;
+    flex-direction: column;
+  }
+  .cart-sidebar.open { right: 0; }
+
+  .cart-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .cart-header h3 { font-family: var(--font-head); font-size: 0.95rem; letter-spacing: 2px; }
+  .cart-close {
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-size: 1.4rem;
+    cursor: pointer;
+    transition: color .2s;
+  }
+  .cart-close:hover { color: var(--text); }
+
+  .cart-items { flex: 1; overflow-y: auto; padding: 1rem 1.5rem; }
+
+  .cart-item {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--border);
+    align-items: flex-start;
+  }
+  .cart-item-img {
+    width: 60px;
+    height: 60px;
+    background: var(--surface2);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    flex-shrink: 0;
+  }
+  .cart-item-info { flex: 1; }
+  .cart-item-name { font-size: 0.85rem; font-weight: 600; margin-bottom: 0.3rem; }
+  .cart-item-price { font-family: var(--font-head); font-size: 0.9rem; color: var(--accent); }
+  .cart-item-qty {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+  }
+  .qty-btn {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    width: 26px;
+    height: 26px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all .2s;
+  }
+  .qty-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .qty-num { font-size: 0.85rem; min-width: 20px; text-align: center; }
+  .cart-item-remove {
+    background: none;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 1rem;
+    transition: color .2s;
+    padding: 0.2rem;
+  }
+  .cart-item-remove:hover { color: var(--accent2); }
+
+  .cart-empty { text-align: center; padding: 3rem 1rem; color: var(--muted); }
+  .cart-empty .empty-icon { font-size: 4rem; margin-bottom: 1rem; }
+
+  .cart-footer {
+    padding: 1.5rem;
+    border-top: 1px solid var(--border);
+  }
+  .cart-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+  .cart-total span { color: var(--muted); font-size: 0.9rem; }
+  .cart-total strong { font-family: var(--font-head); font-size: 1.2rem; color: var(--text); }
+  .checkout-btn {
+    width: 100%;
+    background: var(--accent);
+    border: none;
+    color: var(--bg);
+    padding: 1rem;
+    font-family: var(--font-head);
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all .2s;
+  }
+  .checkout-btn:hover { background: #00c8e0; box-shadow: 0 8px 24px rgba(0,229,255,0.3); }
+
+  /* ─── TOAST ─── */
+  .toast {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    background: var(--surface);
+    border: 1px solid var(--accent);
+    border-radius: 10px;
+    padding: 1rem 1.5rem;
+    font-size: 0.88rem;
+    z-index: 300;
+    transform: translateY(100px);
+    opacity: 0;
+    transition: all .3s;
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+  .toast-icon { font-size: 1.2rem; }
+
+  /* ─── FOOTER ─── */
+  footer {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    padding: 3rem 5% 2rem;
+    position: relative;
+    z-index: 1;
+    margin-top: 3rem;
+  }
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 2.5rem;
+    margin-bottom: 2.5rem;
+  }
+  .footer-brand .logo { font-size: 1.1rem; display: inline-block; margin-bottom: 1rem; }
+  .footer-brand p { font-size: 0.82rem; color: var(--muted); line-height: 1.7; max-width: 280px; }
+  .footer-col h4 { font-family: var(--font-head); font-size: 0.78rem; letter-spacing: 2px; color: var(--accent); margin-bottom: 1rem; }
+  .footer-col ul { list-style: none; }
+  .footer-col ul li a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.82rem;
+    display: block;
+    padding: 0.3rem 0;
+    transition: color .2s;
+  }
+  .footer-col ul li a:hover { color: var(--text); }
+  .footer-bottom {
+    border-top: 1px solid var(--border);
+    padding-top: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--muted);
+    font-size: 0.78rem;
+  }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 768px) {
+    .hero { flex-direction: column; padding: 3rem 5%; text-align: center; }
+    .hero-visual { display: none; }
+    .hero-btns { justify-content: center; }
+    .hero-stats { justify-content: center; }
+    .footer-grid { grid-template-columns: 1fr 1fr; }
+    .cart-sidebar { width: 100%; right: -100%; }
+    .promo-banner { flex-direction: column; text-align: center; }
+    .features-bar { flex-direction: column; }
+    .feature-item { border-right: none; border-bottom: 1px solid var(--border); }
+    .feature-item:last-child { border-bottom: none; }
+  }
+
+  /* ─── ANIMATIONS ─── */
+  @keyframes pulse-glow {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; }
+  }
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .hero-content { animation: fadeInUp .6s ease both; }
+  .hero-visual { animation: fadeInUp .6s ease .2s both; }
+
+  /* ─── PRODUCT DETAIL MODAL ─── */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.75);
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .3s;
+  }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    max-width: 780px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    transform: scale(0.9);
+    transition: transform .3s;
+  }
+  .modal-overlay.open .modal { transform: scale(1); }
+  .modal-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+  }
+  .modal-img {
+    background: var(--surface2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 8rem;
+    min-height: 320px;
+    border-radius: 16px 0 0 16px;
+  }
+  .modal-details { padding: 2rem; }
+  .modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-size: 1.2rem;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all .2s;
+  }
+  .modal-close:hover { border-color: var(--accent2); color: var(--accent2); }
+  .modal { position: relative; }
+  .modal-cat { font-size: 0.72rem; color: var(--accent); letter-spacing: 2px; font-weight: 700; margin-bottom: 0.5rem; }
+  .modal-name { font-family: var(--font-head); font-size: 1.2rem; margin-bottom: 0.8rem; line-height: 1.3; }
+  .modal-rating { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem; }
+  .modal-desc { font-size: 0.85rem; color: var(--muted); line-height: 1.7; margin-bottom: 1.2rem; }
+  .modal-price { margin-bottom: 1.5rem; }
+  .modal-price .curr { font-family: var(--font-head); font-size: 1.6rem; color: var(--text); }
+  .modal-price .orig { font-size: 0.9rem; color: var(--muted); text-decoration: line-through; margin-left: 0.7rem; }
+  .modal-price .off { font-size: 0.82rem; color: var(--accent3); margin-left: 0.5rem; font-weight: 700; }
+  .modal-specs { margin-bottom: 1.5rem; }
+  .modal-specs h4 { font-size: 0.82rem; font-weight: 700; color: var(--muted); letter-spacing: 1px; margin-bottom: 0.7rem; }
+  .spec-row { display: flex; gap: 1rem; font-size: 0.82rem; padding: 0.4rem 0; border-bottom: 1px solid var(--border); }
+  .spec-row .sk { color: var(--muted); flex: 1; }
+  .spec-row .sv { color: var(--text); flex: 2; }
+  .modal-btns { display: flex; gap: 0.8rem; }
+  .modal-btns .btn-primary { flex: 1; text-align: center; border: none; }
+  @media (max-width: 600px) {
+    .modal-inner { grid-template-columns: 1fr; }
+    .modal-img { border-radius: 16px 16px 0 0; min-height: 200px; }
+  }
+
+  /* Stock indicator */
+  .stock-bar { margin-bottom: 1rem; }
+  .stock-label { font-size: 0.75rem; color: var(--muted); margin-bottom: 0.4rem; display: flex; justify-content: space-between; }
+  .stock-label .in { color: var(--accent3); }
+  .stock-track { height: 4px; background: var(--surface2); border-radius: 2px; overflow: hidden; }
+  .stock-fill { height: 100%; background: var(--accent3); border-radius: 2px; }
+
+  /* Tabs in nav */
+  .nav-tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); padding: 0 5%; background: var(--surface); margin-bottom: 0; }
+  .nav-tab { padding: 0.8rem 1.5rem; font-size: 0.82rem; color: var(--muted); cursor: pointer; border-bottom: 2px solid transparent; transition: all .2s; }
+  .nav-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav>
+  <a href="#" class="logo">Circuit<span>Hive</span></a>
+  <div class="search-bar">
+    <input type="text" id="searchInput" placeholder="Search Arduino, sensors, motors, modules..." />
+    <button onclick="handleSearch()">⌕</button>
+  </div>
+  <div class="nav-links">
+    <a href="#" onclick="showSection('home')">Home</a>
+    <a href="#" onclick="showSection('products')">Shop</a>
+    <a href="#" onclick="showSection('about')">About</a>
+    <a href="#" class="cart-btn" onclick="openCart()">
+      🛒 Cart
+      <span class="badge" id="cartBadge">0</span>
+    </a>
+  </div>
+</nav>
+
+<!-- CATEGORY BAR -->
+<div class="cat-bar">
+  <a href="#" class="active" onclick="filterCategory('all', this)">All Products</a>
+  <a href="#" onclick="filterCategory('microcontrollers', this)">Microcontrollers</a>
+  <a href="#" onclick="filterCategory('sensors', this)">Sensors</a>
+  <a href="#" onclick="filterCategory('motors', this)">Motors & Drivers</a>
+  <a href="#" onclick="filterCategory('power', this)">Power & Batteries</a>
+  <a href="#" onclick="filterCategory('displays', this)">Displays</a>
+  <a href="#" onclick="filterCategory('wireless', this)">Wireless Modules</a>
+  <a href="#" onclick="filterCategory('tools', this)">Tools</a>
+  <a href="#" onclick="filterCategory('kits', this)">Starter Kits</a>
+</div>
+
+<!-- MAIN CONTENT -->
+<div id="mainContent">
+
+<!-- HERO SECTION -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-tag">
+      <span>🔌</span> INDIA'S #1 ROBOTICS STORE
+    </div>
+    <h1>
+      Build the<br>
+      <span class="hl">Future</span> with<br>
+      <span class="hl2">Electronics</span>
+    </h1>
+    <p>Premium microcontrollers, sensors, motors, and components for makers, engineers & students. Fast delivery across India.</p>
+    <div class="hero-btns">
+      <a href="#" class="btn-primary" onclick="showSection('products'); return false;">SHOP NOW →</a>
+      <a href="#" class="btn-outline" onclick="scrollToProducts(); return false;">Browse Kits</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-item">
+        <div class="stat-num">5K+</div>
+        <div class="stat-label">PRODUCTS</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">50K+</div>
+        <div class="stat-label">CUSTOMERS</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">24H</div>
+        <div class="stat-label">DISPATCH</div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <svg viewBox="0 0 400 350" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- Circuit board lines -->
+      <rect x="50" y="50" width="300" height="250" rx="16" fill="#0e1520" stroke="#1e2d42" stroke-width="1.5"/>
+      <!-- Traces -->
+      <line x1="80" y1="150" x2="160" y2="150" stroke="#00e5ff" stroke-width="1.5" opacity="0.4"/>
+      <line x1="160" y1="150" x2="160" y2="110" stroke="#00e5ff" stroke-width="1.5" opacity="0.4"/>
+      <line x1="160" y1="110" x2="240" y2="110" stroke="#00e5ff" stroke-width="1.5" opacity="0.4"/>
+      <line x1="240" y1="110" x2="240" y2="200" stroke="#00e5ff" stroke-width="1.5" opacity="0.4"/>
+      <line x1="240" y1="200" x2="320" y2="200" stroke="#00e5ff" stroke-width="1.5" opacity="0.4"/>
+      <line x1="80" y1="230" x2="200" y2="230" stroke="#ff6b35" stroke-width="1.5" opacity="0.4"/>
+      <line x1="200" y1="230" x2="200" y2="260" stroke="#ff6b35" stroke-width="1.5" opacity="0.4"/>
+      <line x1="80" y1="180" x2="120" y2="180" stroke="#7fff6b" stroke-width="1.5" opacity="0.4"/>
+      <line x1="120" y1="180" x2="120" y2="260" stroke="#7fff6b" stroke-width="1.5" opacity="0.4"/>
+      <!-- IC Chip -->
+      <rect x="155" y="140" width="90" height="70" rx="4" fill="#141d2b" stroke="#00e5ff" stroke-width="1.5"/>
+      <text x="200" y="180" text-anchor="middle" fill="#00e5ff" font-size="10" font-family="monospace" font-weight="bold">ATmega328</text>
+      <!-- Pins left -->
+      <line x1="145" y1="152" x2="155" y2="152" stroke="#00e5ff" stroke-width="1.5"/>
+      <line x1="145" y1="162" x2="155" y2="162" stroke="#00e5ff" stroke-width="1.5"/>
+      <line x1="145" y1="172" x2="155" y2="172" stroke="#00e5ff" stroke-width="1.5"/>
+      <line x1="145" y1="182" x2="155" y2="182" stroke="#00e5ff" stroke-width="1.5"/>
+      <line x1="145" y1="192" x2="155" y2="192" stroke="#00e5ff" stroke-width="1.5"/>
+      <line x1="145" y1="202" x2="155" y2="202" stroke="#00e5ff" stroke-width="1.5"/>
+      <!-- Pins right -->
+      <line x1="245" y1="152" x2="255" y2="152" stroke="#00e5ff" stroke-width="1.5"/>
+      <line x1="245" y1="162" x2="255" y2="162" stroke="#00e5ff" stroke-width="1.5"/>
+      <line x1="245" y1="172" x2="255" y2="172" stroke="#00e5ff" stroke-width="1.5"/>
+      <line x1="245" y1="182" x2="255" y2="182" stroke="#00e5ff" stroke-width="1.5"/>
+      <line x1="245" y1="192" x2="255" y2="192" stroke="#00e5ff" stroke-width="1.5"/>
+      <line x1="245" y1="202" x2="255" y2="202" stroke="#00e5ff" stroke-width="1.5"/>
+      <!-- Capacitors -->
+      <rect x="80" y="80" width="20" height="30" rx="2" fill="#141d2b" stroke="#7fff6b" stroke-width="1.5"/>
+      <text x="90" y="98" text-anchor="middle" fill="#7fff6b" font-size="8" font-family="monospace">C1</text>
+      <rect x="110" y="80" width="20" height="30" rx="2" fill="#141d2b" stroke="#7fff6b" stroke-width="1.5"/>
+      <text x="120" y="98" text-anchor="middle" fill="#7fff6b" font-size="8" font-family="monospace">C2</text>
+      <!-- LED indicators -->
+      <circle cx="290" cy="90" r="8" fill="#ff6b35" opacity="0.8">
+        <animate attributeName="opacity" values="0.5;1;0.5" dur="2s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="315" cy="90" r="8" fill="#00e5ff" opacity="0.6">
+        <animate attributeName="opacity" values="0.3;0.8;0.3" dur="1.5s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="340" cy="90" r="8" fill="#7fff6b" opacity="0.7">
+        <animate attributeName="opacity" values="0.4;1;0.4" dur="2.5s" repeatCount="indefinite"/>
+      </circle>
+      <!-- USB connector -->
+      <rect x="270" y="270" width="60" height="20" rx="4" fill="#141d2b" stroke="#1e2d42" stroke-width="1.5"/>
+      <rect x="278" y="274" width="44" height="12" rx="2" fill="#0a1015" stroke="#1e2d42"/>
+      <text x="300" y="284" text-anchor="middle" fill="#6b7f99" font-size="7" font-family="monospace">USB</text>
+      <!-- Resistors -->
+      <rect x="75" y="250" width="30" height="12" rx="3" fill="#141d2b" stroke="#ff6b35" stroke-width="1.5"/>
+      <text x="90" y="260" text-anchor="middle" fill="#ff6b35" font-size="7" font-family="monospace">R1</text>
+      <rect x="75" y="270" width="30" height="12" rx="3" fill="#141d2b" stroke="#ff6b35" stroke-width="1.5"/>
+      <text x="90" y="280" text-anchor="middle" fill="#ff6b35" font-size="7" font-family="monospace">R2</text>
+    </svg>
+  </div>
+</section>
+
+<!-- CATEGORY SECTION -->
+<section class="categories">
+  <div class="section-head" style="padding:0; margin-bottom:1.5rem;">
+    <h2>SHOP BY <span>CATEGORY</span></h2>
+    <a href="#" onclick="showSection('products'); return false;">View all →</a>
+  </div>
+  <div class="cat-grid">
+    <a class="cat-card" href="#" onclick="filterCategory('microcontrollers', null); return false;">
+      <span class="cat-icon">🤖</span>
+      <h3>Microcontrollers</h3>
+      <p>Arduino, ESP32, Raspberry Pi</p>
+    </a>
+    <a class="cat-card" href="#" onclick="filterCategory('sensors', null); return false;">
+      <span class="cat-icon">📡</span>
+      <h3>Sensors</h3>
+      <p>Temperature, ultrasonic, IR</p>
+    </a>
+    <a class="cat-card" href="#" onclick="filterCategory('motors', null); return false;">
+      <span class="cat-icon">⚙️</span>
+      <h3>Motors</h3>
+      <p>Servo, stepper, DC motors</p>
+    </a>
+    <a class="cat-card" href="#" onclick="filterCategory('power', null); return false;">
+      <span class="cat-icon">🔋</span>
+      <h3>Power Supply</h3>
+      <p>Batteries, regulators, modules</p>
+    </a>
+    <a class="cat-card" href="#" onclick="filterCategory('displays', null); return false;">
+      <span class="cat-icon">🖥️</span>
+      <h3>Displays</h3>
+      <p>OLED, LCD, LED matrices</p>
+    </a>
+    <a class="cat-card" href="#" onclick="filterCategory('wireless', null); return false;">
+      <span class="cat-icon">📶</span>
+      <h3>Wireless</h3>
+      <p>WiFi, Bluetooth, RF modules</p>
+    </a>
+    <a class="cat-card" href="#" onclick="filterCategory('tools', null); return false;">
+      <span class="cat-icon">🔧</span>
+      <h3>Tools</h3>
+      <p>Soldering, multimeters</p>
+    </a>
+    <a class="cat-card" href="#" onclick="filterCategory('kits', null); return false;">
+      <span class="cat-icon">📦</span>
+      <h3>Starter Kits</h3>
+      <p>Complete beginner bundles</p>
+    </a>
+  </div>
+</section>
+
+<!-- PROMO BANNER -->
+<div class="promo-banner">
+  <div>
+    <h3>⚡ FLASH SALE — UP TO 40% OFF</h3>
+    <p>On Arduino Mega, Raspberry Pi 5, ESP32 Dev Boards & more. Limited stock!</p>
+  </div>
+  <div class="promo-timer">
+    <div class="timer-block">
+      <div class="num" id="timerH">05</div>
+      <div class="lbl">HRS</div>
+    </div>
+    <div class="timer-block">
+      <div class="num" id="timerM">42</div>
+      <div class="lbl">MIN</div>
+    </div>
+    <div class="timer-block">
+      <div class="num" id="timerS">18</div>
+      <div class="lbl">SEC</div>
+    </div>
+  </div>
+</div>
+
+<!-- FEATURES BAR -->
+<div class="features-bar">
+  <div class="feature-item">
+    <span class="feature-icon">🚚</span>
+    <div class="feature-text">
+      <h4>Free Shipping</h4>
+      <p>On orders above ₹999</p>
+    </div>
+  </div>
+  <div class="feature-item">
+    <span class="feature-icon">⚡</span>
+    <div class="feature-text">
+      <h4>Same Day Dispatch</h4>
+      <p>Order before 3 PM</p>
+    </div>
+  </div>
+  <div class="feature-item">
+    <span class="feature-icon">🔒</span>
+    <div class="feature-text">
+      <h4>Secure Payments</h4>
+      <p>UPI, Cards, Net Banking</p>
+    </div>
+  </div>
+  <div class="feature-item">
+    <span class="feature-icon">↩️</span>
+    <div class="feature-text">
+      <h4>Easy Returns</h4>
+      <p>7-day return policy</p>
+    </div>
+  </div>
+</div>
+
+<!-- PRODUCTS SECTION -->
+<section class="products-section" id="productsSection">
+  <div class="section-head">
+    <h2>FEATURED <span>PRODUCTS</span></h2>
+    <a href="#" id="viewAllLink">View all</a>
+  </div>
+  <div class="products-grid" id="productsGrid">
+    <!-- Products are rendered by JS -->
+  </div>
+</section>
+
+<!-- BRANDS -->
+<section class="brands-section">
+  <div class="section-head" style="padding:0; margin-bottom:1.5rem;">
+    <h2>TRUSTED <span>BRANDS</span></h2>
+  </div>
+  <div class="brands-row">
+    <div class="brand-chip">ARDUINO</div>
+    <div class="brand-chip">RASPBERRY PI</div>
+    <div class="brand-chip">ESPRESSIF</div>
+    <div class="brand-chip">TEXAS INSTRUMENTS</div>
+    <div class="brand-chip">STMicro</div>
+    <div class="brand-chip">BOSCH</div>
+    <div class="brand-chip">SENSIRION</div>
+    <div class="brand-chip">SPARKFUN</div>
+  </div>
+</section>
+
+</div><!-- end mainContent -->
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a class="logo" href="#">Circuit<span>Hive</span></a>
+      <p>India's fastest-growing electronics & robotics parts store. Serving makers, students, and engineers since 2020.</p>
+    </div>
+    <div class="footer-col">
+      <h4>QUICK LINKS</h4>
+      <ul>
+        <li><a href="#">Home</a></li>
+        <li><a href="#">Shop</a></li>
+        <li><a href="#">New Arrivals</a></li>
+        <li><a href="#">Deals</a></li>
+        <li><a href="#">Blog</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>SUPPORT</h4>
+      <ul>
+        <li><a href="#">Track Order</a></li>
+        <li><a href="#">Returns</a></li>
+        <li><a href="#">FAQ</a></li>
+        <li><a href="#">Contact Us</a></li>
+        <li><a href="#">Bulk Orders</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>CONTACT</h4>
+      <ul>
+        <li><a href="#">📧 support@circuithive.in</a></li>
+        <li><a href="#">📞 +91 98765 43210</a></li>
+        <li><a href="#">📍 Pune, Maharashtra</a></li>
+        <li><a href="#">🕒 Mon–Sat, 10AM–6PM</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 CircuitHive. All rights reserved.</span>
+    <span>Made with ❤️ in India 🇮🇳</span>
+  </div>
+</footer>
+
+<!-- CART SIDEBAR -->
+<div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
+<div class="cart-sidebar" id="cartSidebar">
+  <div class="cart-header">
+    <h3>YOUR CART</h3>
+    <button class="cart-close" onclick="closeCart()">✕</button>
+  </div>
+  <div class="cart-items" id="cartItems"></div>
+  <div class="cart-footer">
+    <div class="cart-total">
+      <span>Total</span>
+      <strong id="cartTotal">₹0</strong>
+    </div>
+    <button class="checkout-btn" onclick="handleCheckout()">PROCEED TO CHECKOUT →</button>
+  </div>
+</div>
+
+<!-- PRODUCT MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+  <div class="modal" id="productModal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-inner" id="modalInner"></div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <span class="toast-icon">✅</span>
+  <span id="toastMsg">Added to cart!</span>
+</div>
+
+<script>
+// ─── PRODUCT DATA ───
+const products = [
+  { id:1, name:"Arduino Uno R3", cat:"microcontrollers", emoji:"🔵", price:549, orig:699, rating:4.8, reviews:1240, badge:"BESTSELLER", desc:"The classic Arduino Uno R3 with ATmega328P. Perfect for beginners and experts alike. 14 digital I/O pins, 6 analog inputs, USB connectivity.", specs:[["MCU","ATmega328P"],["Flash","32KB"],["SRAM","2KB"],["Clock","16 MHz"],["I/O Pins","14 Digital, 6 Analog"],["Interface","USB-B"]], stock:85 },
+  { id:2, name:"ESP32 DevKit V1", cat:"microcontrollers", emoji:"🟢", price:349, orig:499, rating:4.9, reviews:2180, badge:"HOT", desc:"Dual-core WiFi + Bluetooth microcontroller. Ideal for IoT projects with built-in wireless connectivity.", specs:[["MCU","Xtensa LX6 Dual-Core"],["Flash","4MB"],["Clock","240 MHz"],["WiFi","802.11 b/g/n"],["Bluetooth","4.2 BLE"],["GPIO","34"]], stock:62 },
+  { id:3, name:"Raspberry Pi 5 (4GB)", cat:"microcontrollers", emoji:"🍓", price:5499, orig:5999, rating:4.9, reviews:876, badge:"NEW", desc:"The latest Raspberry Pi 5 with quad-core ARM Cortex-A76, PCIe interface, and improved performance over Pi 4.", specs:[["CPU","Cortex-A76 Quad-Core"],["RAM","4GB LPDDR4X"],["USB","2× USB 3.0, 2× USB 2.0"],["Display","2× MIPI DSI/CSI"],["Storage","microSD"],["Power","USB-C 5V 5A"]], stock:20 },
+  { id:4, name:"HC-SR04 Ultrasonic Sensor", cat:"sensors", emoji:"📡", price:89, orig:149, rating:4.6, reviews:3420, badge:"SALE", desc:"Accurate distance measurement sensor with 2cm–400cm range. Essential for obstacle avoidance and robotics.", specs:[["Range","2cm – 400cm"],["Accuracy","±3mm"],["Voltage","5V DC"],["Current","15mA"],["Frequency","40kHz"],["Pins","Vcc, Trig, Echo, GND"]], stock:95 },
+  { id:5, name:"DHT22 Temp & Humidity", cat:"sensors", emoji:"🌡️", price:199, orig:249, rating:4.7, reviews:980, badge:null, desc:"High-accuracy temperature and humidity sensor. Works with Arduino, ESP32, Raspberry Pi.", specs:[["Temp Range","-40°C to +80°C"],["Humidity","0–100% RH"],["Accuracy","±0.5°C, ±2% RH"],["Voltage","3.3–5V"],["Protocol","Single-wire"],["Sampling","0.5 Hz"]], stock:70 },
+  { id:6, name:"MPU-6050 Gyro+Accel", cat:"sensors", emoji:"🌀", price:149, orig:199, rating:4.7, reviews:1560, badge:null, desc:"6-axis IMU with 3-axis gyroscope and 3-axis accelerometer over I2C. Perfect for drones and robots.", specs:[["Axes","6 (3-Gyro, 3-Accel)"],["Interface","I2C"],["Voltage","3.3–5V"],["Accel Range","±2g to ±16g"],["Gyro Range","±250 to ±2000°/s"],["Package","DIP-8"]], stock:55 },
+  { id:7, name:"MG996R Servo Motor", cat:"motors", emoji:"⚙️", price:299, orig:399, rating:4.5, reviews:2100, badge:null, desc:"High-torque metal gear servo motor. Ideal for robotic arms, RC cars, and pan-tilt systems.", specs:[["Torque","11 kg·cm"],["Speed","0.17s/60°"],["Voltage","4.8–7.2V"],["Current","2.5A (stall)"],["Angle","0°–180°"],["Weight","55g"]], stock:40 },
+  { id:8, name:"NEMA 17 Stepper Motor", cat:"motors", emoji:"🔩", price:649, orig:799, rating:4.8, reviews:670, badge:null, desc:"Popular bipolar stepper motor for 3D printers and CNC machines. 1.8° step angle, 40N·cm holding torque.", specs:[["Step Angle","1.8°"],["Holding Torque","40 N·cm"],["Voltage","12–24V"],["Current","1.5A"],["Steps/Rev","200"],["Frame","NEMA 17"]], stock:30 },
+  { id:9, name:"L298N Motor Driver", cat:"motors", emoji:"🔄", price:129, orig:179, rating:4.6, reviews:4250, badge:"BESTSELLER", desc:"Dual H-bridge motor driver for controlling 2 DC motors or 1 stepper motor. Up to 2A per channel.", specs:[["Channels","2x H-Bridge"],["Voltage","5–35V"],["Current","2A per channel"],["Logic","3.3–5V"],["Interface","PWM"],["Package","Module"]], stock:88 },
+  { id:10, name:"18650 Li-Ion Battery 3000mAh", cat:"power", emoji:"🔋", price:249, orig:349, rating:4.4, reviews:2890, badge:null, desc:"High-capacity 18650 lithium-ion rechargeable cell. 3.7V nominal. For robots, drones, and DIY power banks.", specs:[["Capacity","3000mAh"],["Voltage","3.7V nominal"],["Max Charge","4.2V"],["Discharge Cut","2.5V"],["Chemistry","Li-Ion"],["Size","18×65mm"]], stock:75 },
+  { id:11, name:"TP4056 Charger Module", cat:"power", emoji:"⚡", price:39, orig:59, rating:4.5, reviews:5100, badge:"SALE", desc:"1A Li-Ion/LiPo battery charger with protection circuit. Micro USB input, onboard LED status.", specs:[["Input","Micro USB 5V"],["Charge Current","1A (max)"],["Cutoff","4.2V"],["Protection","Over/under voltage"],["Indicator","LED"],["Size","25×19mm"]], stock:92 },
+  { id:12, name:"0.96\" OLED Display", cat:"displays", emoji:"🖥️", price:199, orig:279, rating:4.8, reviews:3200, badge:"HOT", desc:"128×64 pixel OLED display with I2C interface. Ultra-low power, high contrast. Works with all microcontrollers.", specs:[["Resolution","128×64 px"],["Interface","I2C (SDA/SCL)"],["Voltage","3.3–5V"],["Color","White/Blue/Yellow"],["Driver","SSD1306"],["Size","0.96 inch"]], stock:60 },
+  { id:13, name:"16×2 LCD with I2C", cat:"displays", emoji:"📟", price:149, orig:199, rating:4.4, reviews:2780, badge:null, desc:"Classic 16-character × 2-line LCD with I2C backpack. Only 2 pins needed (SDA, SCL).", specs:[["Characters","16×2"],["Backlight","LED (Blue)"],["Interface","I2C (PCF8574)"],["Voltage","5V"],["I2C Address","0x27 (default)"],["Contrast","Adjustable"]], stock:50 },
+  { id:14, name:"HC-05 Bluetooth Module", cat:"wireless", emoji:"📶", price:249, orig:349, rating:4.5, reviews:1890, badge:null, desc:"Classic Bluetooth 2.0 serial module. Easy AT command configuration for wireless data transfer.", specs:[["Protocol","Bluetooth 2.0 SPP"],["Range","~10m"],["Baud Rate","1200–1382400"],["Voltage","3.3–5V"],["Interface","UART"],["Modes","Master/Slave"]], stock:45 },
+  { id:15, name:"NRF24L01+ RF Module", cat:"wireless", emoji:"📡", price:129, orig:179, rating:4.6, reviews:1340, badge:null, desc:"2.4GHz wireless transceiver module with up to 100m range. SPI interface, 125 channels.", specs:[["Frequency","2.4 GHz ISM"],["Range","100m (open)"],["Data Rate","250kbps–2Mbps"],["Voltage","1.9–3.6V"],["Interface","SPI"],["Channels","125"]], stock:38 },
+  { id:16, name:"Arduino Starter Kit", cat:"kits", emoji:"📦", price:1299, orig:1999, rating:4.9, reviews:4560, badge:"BESTSELLER", desc:"Complete beginner kit with Arduino Uno, breadboard, jumpers, LEDs, resistors, sensors, and project booklet with 15 experiments.", specs:[["Board","Arduino Uno R3"],["Components","200+"],["Projects","15 guided"],["Includes","Breadboard, jumpers"],["Extra","Project guide"],["Level","Beginner"]], stock:28 },
+  { id:17, name:"Digital Multimeter DT-830B", cat:"tools", emoji:"🔧", price:349, orig:499, rating:4.3, reviews:2100, badge:null, desc:"Essential digital multimeter for measuring voltage, current, resistance, and diode testing.", specs:[["DC Voltage","0–1000V"],["AC Voltage","0–750V"],["DC Current","0–10A"],["Resistance","0–2MΩ"],["Features","Diode, Continuity"],["Display","3.5 digit LCD"]], stock:55 },
+  { id:18, name:"Soldering Station 60W", cat:"tools", emoji:"🔌", price:799, orig:1199, rating:4.6, reviews:890, badge:"SALE", desc:"Temperature-controlled soldering station, 200–480°C range. Includes solder, flux, helping hands.", specs:[["Power","60W"],["Temp Range","200–480°C"],["Display","LED"],["Includes","Iron + Stand + Solder"],["Tip","Replaceable"],["Input","AC 220V"]], stock:18 }
+];
+
+let cart = [];
+let currentCategory = 'all';
+
+// ─── RENDER PRODUCTS ───
+function renderProducts(list) {
+  const grid = document.getElementById('productsGrid');
+  if (!list.length) {
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:3rem;color:var(--muted)">No products found.</div>';
+    return;
+  }
+  grid.innerHTML = list.map(p => {
+    const discount = p.orig ? Math.round((1 - p.price/p.orig)*100) : 0;
+    return `
+    <div class="product-card" onclick="openModal(${p.id})">
+      <div class="product-img">
+        ${p.badge ? `<span class="product-badge ${p.badge === 'NEW' ? 'new' : ''}">${p.badge}</span>` : ''}
+        <button class="product-wishlist" onclick="wishlist(event, ${p.id})">♡</button>
+        <span style="font-size:3.5rem">${p.emoji}</span>
+      </div>
+      <div class="product-info">
+        <div class="product-cat">${p.cat.toUpperCase()}</div>
+        <div class="product-name">${p.name}</div>
+        <div class="product-rating">
+          <span class="stars">${'★'.repeat(Math.floor(p.rating))}${'☆'.repeat(5-Math.floor(p.rating))}</span>
+          <span class="rating-count">${p.rating} (${p.reviews.toLocaleString()})</span>
+        </div>
+        <div class="product-price">
+          <span class="price-curr">₹${p.price}</span>
+          ${p.orig ? `<span class="price-orig">₹${p.orig}</span><span class="price-off">-${discount}%</span>` : ''}
+        </div>
+        <button class="add-to-cart" id="btn-${p.id}" onclick="addToCart(event, ${p.id})">ADD TO CART</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ─── FILTER ───
+function filterCategory(cat, el) {
+  currentCategory = cat;
+  if (el) {
+    document.querySelectorAll('.cat-bar a').forEach(a => a.classList.remove('active'));
+    el.classList.add('active');
+  }
+  const filtered = cat === 'all' ? products : products.filter(p => p.cat === cat);
+  renderProducts(filtered);
+  document.getElementById('productsSection').scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+// ─── SEARCH ───
+function handleSearch() {
+  const q = document.getElementById('searchInput').value.toLowerCase().trim();
+  if (!q) { renderProducts(products); return; }
+  const res = products.filter(p => p.name.toLowerCase().includes(q) || p.cat.toLowerCase().includes(q) || p.desc.toLowerCase().includes(q));
+  renderProducts(res);
+  document.getElementById('productsSection').scrollIntoView({behavior:'smooth'});
+}
+document.getElementById('searchInput').addEventListener('keydown', e => { if(e.key==='Enter') handleSearch(); });
+
+// ─── CART ───
+function addToCart(e, id) {
+  e.stopPropagation();
+  const p = products.find(p => p.id === id);
+  const existing = cart.find(c => c.id === id);
+  if (existing) existing.qty++;
+  else cart.push({...p, qty:1});
+  updateCartUI();
+  const btn = document.getElementById('btn-'+id);
+  if(btn) { btn.textContent = '✓ ADDED'; btn.classList.add('added'); setTimeout(()=>{ btn.textContent='ADD TO CART'; btn.classList.remove('added'); }, 1500); }
+  showToast(`${p.name} added to cart!`);
+}
+
+function updateCartUI() {
+  const count = cart.reduce((s,c) => s+c.qty, 0);
+  document.getElementById('cartBadge').textContent = count;
+  const total = cart.reduce((s,c) => s + c.price*c.qty, 0);
+  document.getElementById('cartTotal').textContent = '₹'+total.toLocaleString('en-IN');
+  const container = document.getElementById('cartItems');
+  if (!cart.length) {
+    container.innerHTML = '<div class="cart-empty"><div class="empty-icon">🛒</div><p>Your cart is empty</p><p style="font-size:0.8rem;margin-top:0.5rem">Add some products to get started!</p></div>';
+    return;
+  }
+  container.innerHTML = cart.map(item => `
+    <div class="cart-item">
+      <div class="cart-item-img">${item.emoji}</div>
+      <div class="cart-item-info">
+        <div class="cart-item-name">${item.name}</div>
+        <div class="cart-item-price">₹${item.price}</div>
+        <div class="cart-item-qty">
+          <button class="qty-btn" onclick="changeQty(${item.id},-1)">−</button>
+          <span class="qty-num">${item.qty}</span>
+          <button class="qty-btn" onclick="changeQty(${item.id},1)">+</button>
+        </div>
+      </div>
+      <button class="cart-item-remove" onclick="removeFromCart(${item.id})">🗑️</button>
+    </div>`).join('');
+}
+
+function changeQty(id, delta) {
+  const item = cart.find(c => c.id === id);
+  if (!item) return;
+  item.qty += delta;
+  if (item.qty <= 0) cart = cart.filter(c => c.id !== id);
+  updateCartUI();
+}
+function removeFromCart(id) {
+  cart = cart.filter(c => c.id !== id);
+  updateCartUI();
+  showToast('Item removed from cart');
+}
+
+function openCart() {
+  document.getElementById('cartSidebar').classList.add('open');
+  document.getElementById('cartOverlay').classList.add('open');
+  updateCartUI();
+}
+function closeCart() {
+  document.getElementById('cartSidebar').classList.remove('open');
+  document.getElementById('cartOverlay').classList.remove('open');
+}
+function handleCheckout() {
+  if (!cart.length) { showToast('Your cart is empty!'); return; }
+  showToast('🎉 Proceeding to checkout...');
+  closeCart();
+}
+
+// ─── MODAL ───
+function openModal(id) {
+  const p = products.find(p => p.id === id);
+  if (!p) return;
+  const discount = p.orig ? Math.round((1-p.price/p.orig)*100) : 0;
+  document.getElementById('modalInner').innerHTML = `
+    <div class="modal-img" style="font-size:7rem">${p.emoji}</div>
+    <div class="modal-details">
+      <div class="modal-cat">${p.cat.toUpperCase()}</div>
+      <div class="modal-name">${p.name}</div>
+      <div class="modal-rating">
+        <span class="stars">${'★'.repeat(Math.floor(p.rating))}${'☆'.repeat(5-Math.floor(p.rating))}</span>
+        <span style="font-size:0.8rem;color:var(--muted)">${p.rating} · ${p.reviews.toLocaleString()} reviews</span>
+      </div>
+      <p class="modal-desc">${p.desc}</p>
+      <div class="modal-price">
+        <span class="curr">₹${p.price}</span>
+        ${p.orig ? `<span class="orig">₹${p.orig}</span><span class="off">${discount}% OFF</span>` : ''}
+      </div>
+      <div class="stock-bar">
+        <div class="stock-label"><span class="in">✓ In Stock</span><span>${p.stock} units left</span></div>
+        <div class="stock-track"><div class="stock-fill" style="width:${p.stock}%"></div></div>
+      </div>
+      <div class="modal-specs">
+        <h4>SPECIFICATIONS</h4>
+        ${p.specs.map(s=>`<div class="spec-row"><span class="sk">${s[0]}</span><span class="sv">${s[1]}</span></div>`).join('')}
+      </div>
+      <div class="modal-btns">
+        <button class="btn-primary" onclick="addToCartFromModal(${p.id})">ADD TO CART</button>
+        <button class="btn-outline" onclick="closeModal()">CLOSE</button>
+      </div>
+    </div>`;
+  document.getElementById('modalOverlay').classList.add('open');
+}
+function addToCartFromModal(id) {
+  const fakeEvent = {stopPropagation: ()=>{}};
+  addToCart(fakeEvent, id);
+  closeModal();
+}
+function closeModal(e) {
+  if (e && e.target !== document.getElementById('modalOverlay')) return;
+  document.getElementById('modalOverlay').classList.remove('open');
+}
+
+// ─── WISHLIST ───
+function wishlist(e, id) {
+  e.stopPropagation();
+  const p = products.find(p => p.id===id);
+  showToast(`💖 ${p.name} added to wishlist!`);
+  e.target.textContent = '♥';
+  e.target.style.color = '#ff6b35';
+}
+
+// ─── TOAST ───
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 2800);
+}
+
+// ─── TIMER ───
+let timerSec = 5*3600 + 42*60 + 18;
+setInterval(() => {
+  if (timerSec <= 0) return;
+  timerSec--;
+  const h = Math.floor(timerSec/3600);
+  const m = Math.floor((timerSec%3600)/60);
+  const s = timerSec%60;
+  document.getElementById('timerH').textContent = String(h).padStart(2,'0');
+  document.getElementById('timerM').textContent = String(m).padStart(2,'0');
+  document.getElementById('timerS').textContent = String(s).padStart(2,'0');
+}, 1000);
+
+function scrollToProducts() {
+  document.getElementById('productsSection').scrollIntoView({behavior:'smooth'});
+}
+
+// ─── INIT ───
+renderProducts(products);
+</script>
+</body>
+</html>
