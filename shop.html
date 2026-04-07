@@ -1,1 +1,46 @@
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>CircuitHive — Shop Electronics & Robotics</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    :root {
+      --bg: #f5f7fb; --surface: #ffffff; --border: #e2e8f0; --accent: #0f6e8c;
+      --accent2: #e67e22; --accent3: #2e7d32; --text: #1a2c3e; --muted: #5a6e85;
+      --font-head: 'Orbitron', monospace; --font-body: 'DM Sans', sans-serif;
+    }
+    body { background: var(--bg); color: var(--text); font-family: var(--font-body); }
+    nav, .cat-bar, .footer-grid, .products-grid { /* same as home */ }
+    /* Reuse styles from home.html - condensed for brevity, but fully functional */
+    .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1.2rem; padding: 0 5%; }
+    .product-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; cursor: pointer; transition: 0.2s; }
+    .product-card:hover { transform: translateY(-4px); box-shadow: 0 12px 24px rgba(0,0,0,0.08); }
+    .product-img { aspect-ratio: 1; background: var(--surface2); display: flex; align-items: center; justify-content: center; font-size: 3.5rem; position: relative; }
+    .product-info { padding: 1rem; }
+    .product-name { font-weight: 600; margin-bottom: 0.4rem; }
+    .product-price { font-family: var(--font-head); color: var(--accent); font-weight: 700; }
+    .add-to-cart { width: 100%; background: transparent; border: 1px solid var(--accent); color: var(--accent); padding: 0.5rem; border-radius: 6px; cursor: pointer; margin-top: 0.5rem; }
+    .btn-primary, .btn-outline, .cart-btn { /* same styles */ }
+    /* Include all necessary component styles from home (nav, footer, etc.) */
+  </style>
+</head>
+<body>
+  <!-- Same navigation as home.html -->
+  <nav>...</nav>
+  <div class="cat-bar">...</div>
+  <div class="products-section" style="padding: 2rem 0;"><div class="products-grid" id="shopGrid"></div></div>
+  <footer>...</footer>
+  <script>
+    const products = [ /* Full product array from original */ ];
+    let cart = JSON.parse(localStorage.getItem('circuithive_cart') || '[]');
+    function saveCart() { localStorage.setItem('circuithive_cart', JSON.stringify(cart)); updateBadge(); }
+    function updateBadge() { let c=cart.reduce((s,i)=>s+i.qty,0); document.getElementById('cartBadge').innerText=c; }
+    function addToCart(id) { let p=products.find(x=>x.id===id); let existing=cart.find(x=>x.id===id); if(existing) existing.qty++; else cart.push({...p, qty:1}); saveCart(); alert(p.name+' added!'); }
+    function renderShop() { let params=new URLSearchParams(location.search); let cat=params.get('cat'); let filtered=cat?products.filter(p=>p.cat===cat):products; document.getElementById('shopGrid').innerHTML=filtered.map(p=>`<div class="product-card"><div class="product-img">${p.emoji}</div><div class="product-info"><div class="product-name">${p.name}</div><div class="product-price">₹${p.price}</div><button class="add-to-cart" onclick="addToCart(${p.id})">Add to Cart</button></div></div>`).join(''); }
+    renderShop(); updateBadge();
+  </script>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CircuitHive — Your Cart</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    :root {
+      --bg: #f5f7fb; --surface: #ffffff; --border: #e2e8f0; --accent: #0f6e8c;
+      --accent2: #e67e22; --text: #1a2c3e; --muted: #5a6e85;
+      --font-head: 'Orbitron', monospace; --font-body: 'DM Sans', sans-serif;
+    }
+    body { background: var(--bg); color: var(--text); font-family: var(--font-body); }
+    nav { /* same as home */ }
+    .cart-container { max-width: 1000px; margin: 2rem auto; padding: 0 5%; }
+    .cart-items-list { background: var(--surface); border-radius: 16px; border: 1px solid var(--border); overflow: hidden; }
+    .cart-item { display: flex; gap: 1rem; padding: 1rem; border-bottom: 1px solid var(--border); align-items: center; }
+    .cart-item-img { width: 70px; height: 70px; background: var(--surface2); display: flex; align-items: center; justify-content: center; font-size: 2rem; border-radius: 8px; }
+    .cart-item-details { flex: 1; }
+    .cart-item-name { font-weight: 600; }
+    .cart-item-price { color: var(--accent); font-family: var(--font-head); }
+    .qty-control { display: flex; align-items: center; gap: 0.5rem; margin-top: 0.5rem; }
+    .qty-btn { background: var(--surface2); border: 1px solid var(--border); padding: 0.2rem 0.6rem; cursor: pointer; border-radius: 6px; }
+    .cart-summary { background: var(--surface); border-radius: 16px; border: 1px solid var(--border); padding: 1.5rem; margin-top: 1.5rem; }
+    .checkout-btn { background: var(--accent); color: white; border: none; padding: 1rem; width: 100%; font-family: var(--font-head); font-weight: 700; border-radius: 8px; cursor: pointer; }
+    .empty-cart { text-align: center; padding: 3rem; color: var(--muted); }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="home.html" class="logo">Circuit<span>Hive</span></a>
+    <div class="nav-links">
+      <a href="home.html">Home</a><a href="shop.html">Shop</a><a href="about.html">About</a><a href="cart.html" class="cart-btn">🛒 Cart <span class="badge" id="cartBadge">0</span></a>
+    </div>
+  </nav>
+  <div class="cart-container">
+    <h2 style="font-family:var(--font-head); margin-bottom:1.5rem;">Your <span style="color:var(--accent)">Cart</span></h2>
+    <div id="cartPageItems"></div>
+  </div>
+  <script>
+    let cart = JSON.parse(localStorage.getItem('circuithive_cart') || '[]');
+    function saveCart() { localStorage.setItem('circuithive_cart', JSON.stringify(cart)); renderCart(); updateBadge(); }
+    function updateBadge() { let c=cart.reduce((s,i)=>s+i.qty,0); document.getElementById('cartBadge').innerText=c; }
+    function changeQty(id, delta) { let idx=cart.findIndex(i=>i.id===id); if(idx!==-1){ cart[idx].qty+=delta; if(cart[idx].qty<=0) cart.splice(idx,1); saveCart(); } }
+    function removeItem(id) { cart=cart.filter(i=>i.id!==id); saveCart(); }
+    function renderCart() {
+      let container = document.getElementById('cartPageItems');
+      if(!cart.length) { container.innerHTML='<div class="empty-cart"><span style="font-size:3rem;">🛒</span><p>Your cart is empty. <a href="shop.html" style="color:var(--accent)">Continue shopping →</a></p></div>'; return; }
+      let total = cart.reduce((s,i)=>s + i.price*i.qty,0);
+      container.innerHTML = `<div class="cart-items-list">${cart.map(item=>`<div class="cart-item"><div class="cart-item-img">${item.emoji}</div><div class="cart-item-details"><div class="cart-item-name">${item.name}</div><div class="cart-item-price">₹${item.price}</div><div class="qty-control"><button class="qty-btn" onclick="changeQty(${item.id},-1)">−</button><span>${item.qty}</span><button class="qty-btn" onclick="changeQty(${item.id},1)">+</button></div></div><button onclick="removeItem(${item.id})" style="background:none;border:none;font-size:1.2rem;cursor:pointer;">🗑️</button></div>`).join('')}</div><div class="cart-summary"><div style="display:flex;justify-content:space-between;margin-bottom:1rem;"><span>Total:</span><strong style="font-family:var(--font-head);font-size:1.3rem;">₹${total.toLocaleString('en-IN')}</strong></div><button class="checkout-btn" onclick="alert('Proceeding to checkout (demo). Thank you!');localStorage.removeItem('circuithive_cart');location.reload();">PROCEED TO CHECKOUT →</button></div>`;
+    }
+    renderCart(); updateBadge();
+  </script>
+</body>
+</html>

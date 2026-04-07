@@ -1,1 +1,51 @@
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CircuitHive — About Us</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    :root {
+      --bg: #f5f7fb; --surface: #ffffff; --border: #e2e8f0; --accent: #0f6e8c;
+      --accent2: #e67e22; --text: #1a2c3e; --muted: #5a6e85;
+      --font-head: 'Orbitron', monospace; --font-body: 'DM Sans', sans-serif;
+    }
+    body { background: var(--bg); color: var(--text); font-family: var(--font-body); }
+    nav { /* same as home */ }
+    .about-hero { padding: 4rem 5%; text-align: center; background: var(--surface); border-bottom: 1px solid var(--border); }
+    .about-hero h1 { font-family: var(--font-head); font-size: 2.5rem; color: var(--accent); margin-bottom: 1rem; }
+    .about-content { max-width: 800px; margin: 3rem auto; padding: 0 5%; line-height: 1.7; }
+    .values-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px,1fr)); gap: 2rem; margin: 3rem 0; }
+    .value-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 2rem; text-align: center; }
+    footer { background: var(--surface); border-top: 1px solid var(--border); padding: 2rem 5%; margin-top: 3rem; }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="home.html" class="logo">Circuit<span>Hive</span></a>
+    <div class="nav-links">
+      <a href="home.html">Home</a><a href="shop.html">Shop</a><a href="about.html">About</a><a href="cart.html" class="cart-btn">🛒 Cart <span class="badge" id="cartBadge">0</span></a>
+    </div>
+  </nav>
+  <div class="about-hero">
+    <h1>About CircuitHive</h1>
+    <p style="color:var(--muted); max-width:600px; margin:0 auto;">Empowering Makers, Engineers & Students since 2020</p>
+  </div>
+  <div class="about-content">
+    <p>CircuitHive is India's premier destination for high-quality electronics components, robotics kits, and embedded systems. Founded by engineers and makers, we understand the needs of hobbyists, students, and professionals. We source only genuine components from trusted brands like Arduino, Raspberry Pi, Espressif, and Texas Instruments.</p>
+    <div class="values-grid">
+      <div class="value-card"><span style="font-size:2.5rem;">🚀</span><h3>Innovation</h3><p>Cutting-edge products for next-gen creators.</p></div>
+      <div class="value-card"><span style="font-size:2.5rem;">🇮🇳</span><h3>Made for India</h3><p>Fast shipping, local support, and competitive pricing.</p></div>
+      <div class="value-card"><span style="font-size:2.5rem;">🤝</span><h3>Community</h3><p>Workshops, tutorials, and a thriving maker ecosystem.</p></div>
+    </div>
+    <p>With over 5,000 products, same-day dispatch, and a 7-day return policy, we're committed to making electronics accessible to everyone. Whether you're building a weather station, a drone, or your first LED blink — CircuitHive is your trusted partner.</p>
+  </div>
+  <footer><div class="footer-bottom"><span>© 2025 CircuitHive. All rights reserved.</span></div></footer>
+  <script>
+    function updateBadge() { let cart = JSON.parse(localStorage.getItem('circuithive_cart') || '[]'); let c = cart.reduce((s,i)=>s+i.qty,0); document.getElementById('cartBadge').innerText = c; }
+    updateBadge();
+  </script>
+</body>
+</html>

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>CircuitHive — Microcontrollers</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* Copy the ENTIRE style block from allproducts.html above */
+    :root {
+      --bg: #f5f7fb;
+      --surface: #ffffff;
+      --surface2: #f0f2f5;
+      --border: #e2e8f0;
+      --accent: #0f6e8c;
+      --accent2: #e67e22;
+      --accent3: #2e7d32;
+      --text: #1a2c3e;
+      --muted: #5a6e85;
+      --card: #ffffff;
+      --font-head: 'Orbitron', monospace;
+      --font-body: 'DM Sans', sans-serif;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: var(--bg); color: var(--text); font-family: var(--font-body); min-height: 100vh; }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--border); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 3px; }
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: linear-gradient(rgba(15,110,140,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(15,110,140,0.04) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(255,255,255,0.94);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 5%;
+      display: flex;
+      align-items: center;
+      height: 64px;
+      gap: 2rem;
+    }
+    .logo { font-family: var(--font-head); font-size: 1.3rem; font-weight: 900; color: var(--accent); text-decoration: none; letter-spacing: 2px; }
+    .logo span { color: var(--accent2); }
+    .search-bar { flex: 1; max-width: 520px; display: flex; align-items: center; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+    .search-bar:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(15,110,140,0.1); }
+    .search-bar input { flex: 1; background: none; border: none; outline: none; color: var(--text); font-family: var(--font-body); font-size: 0.9rem; padding: 0.6rem 1rem; }
+    .search-bar input::placeholder { color: var(--muted); }
+    .search-bar button { background: var(--accent); border: none; color: white; padding: 0.6rem 1.2rem; font-size: 1rem; cursor: pointer; font-weight: 700; }
+    .nav-links { display: flex; gap: 0.5rem; margin-left: auto; align-items: center; }
+    .nav-links a { color: var(--muted); text-decoration: none; font-size: 0.85rem; padding: 0.4rem 0.8rem; border-radius: 6px; transition: all .2s; cursor: pointer; }
+    .nav-links a:hover { color: var(--accent); background: rgba(15,110,140,0.08); }
+    .cart-btn { background: var(--accent); color: white !important; font-weight: 700 !important; padding: 0.5rem 1.2rem !important; border-radius: 8px !important; display: flex; align-items: center; gap: 0.4rem; }
+    .cart-btn .badge { background: var(--accent2); color: white; border-radius: 50%; width: 18px; height: 18px; font-size: 0.7rem; display: flex; align-items: center; justify-content: center; }
+    .cat-bar { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 5%; display: flex; gap: 0; overflow-x: auto; scrollbar-width: none; }
+    .cat-bar::-webkit-scrollbar { display: none; }
+    .cat-bar a { color: var(--muted); text-decoration: none; font-size: 0.82rem; font-weight: 500; padding: 0.75rem 1.2rem; white-space: nowrap; border-bottom: 2px solid transparent; transition: all .2s; }
+    .cat-bar a:hover, .cat-bar a.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .page-header { padding: 2rem 5% 1rem; position: relative; z-index: 1; }
+    .page-header h1 { font-family: var(--font-head); font-size: 1.8rem; color: var(--text); }
+    .page-header h1 span { color: var(--accent); }
+    .products-section { padding: 1rem 0 3rem; position: relative; z-index: 1; }
+    .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1.5rem; padding: 0 5%; }
+    .product-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; transition: all .3s; cursor: pointer; position: relative; }
+    .product-card:hover { border-color: rgba(15,110,140,0.4); transform: translateY(-5px); box-shadow: 0 16px 40px rgba(0,0,0,0.08); }
+    .product-img { aspect-ratio: 1; background: var(--surface2); display: flex; align-items: center; justify-content: center; font-size: 4rem; position: relative; }
+    .product-badge { position: absolute; top: 0.6rem; left: 0.6rem; background: var(--accent2); color: white; font-size: 0.68rem; font-weight: 700; padding: 0.25rem 0.6rem; border-radius: 4px; z-index: 1; }
+    .product-badge.new { background: var(--accent3); }
+    .product-badge.bestseller { background: #d4af37; color: #1a2c3e; }
+    .product-wishlist { position: absolute; top: 0.6rem; right: 0.6rem; background: var(--card); border: 1px solid var(--border); border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; cursor: pointer; transition: all .2s; opacity: 0; z-index: 2; color: var(--muted); }
+    .product-card:hover .product-wishlist { opacity: 1; }
+    .product-wishlist:hover { background: var(--accent2); border-color: var(--accent2); color: white; }
+    .product-info { padding: 1rem; }
+    .product-cat { font-size: 0.7rem; color: var(--accent); letter-spacing: 1px; font-weight: 600; margin-bottom: 0.3rem; text-transform: uppercase; }
+    .product-name { font-size: 0.95rem; font-weight: 600; margin-bottom: 0.5rem; line-height: 1.3; }
+    .product-rating { display: flex; align-items: center; gap: 0.4rem; margin-bottom: 0.7rem; }
+    .stars { color: #f5a623; font-size: 0.75rem; }
+    .rating-count { font-size: 0.7rem; color: var(--muted); }
+    .product-price { display: flex; align-items: baseline; gap: 0.6rem; margin-bottom: 0.8rem; }
+    .price-curr { font-family: var(--font-head); font-size: 1.1rem; font-weight: 700; color: var(--accent); }
+    .price-orig { font-size: 0.8rem; color: var(--muted); text-decoration: line-through; }
+    .price-off { font-size: 0.7rem; color: var(--accent3); font-weight: 600; }
+    .add-to-cart { width: 100%; background: transparent; border: 1px solid var(--accent); color: var(--accent); padding: 0.6rem; border-radius: 7px; font-family: var(--font-head); font-size: 0.73rem; letter-spacing: 1px; cursor: pointer; transition: all .2s; font-weight: 700; }
+    .add-to-cart:hover { background: var(--accent); color: white; }
+    .add-to-cart.added { background: var(--accent3); border-color: var(--accent3); color: white; }
+    footer { background: var(--surface); border-top: 1px solid var(--border); padding: 3rem 5% 2rem; margin-top: 3rem; }
+    .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 2.5rem; margin-bottom: 2.5rem; }
+    .footer-brand .logo { font-size: 1.1rem; display: inline-block; margin-bottom: 1rem; }
+    .footer-brand p { font-size: 0.82rem; color: var(--muted); line-height: 1.7; max-width: 280px; }
+    .footer-col h4 { font-family: var(--font-head); font-size: 0.78rem; letter-spacing: 2px; color: var(--accent); margin-bottom: 1rem; }
+    .footer-col ul { list-style: none; }
+    .footer-col ul li a { color: var(--muted); text-decoration: none; font-size: 0.82rem; display: block; padding: 0.3rem 0; }
+    .footer-col ul li a:hover { color: var(--text); }
+    .footer-bottom { border-top: 1px solid var(--border); padding-top: 1.5rem; display: flex; justify-content: space-between; color: var(--muted); font-size: 0.78rem; }
+    .toast { position: fixed; bottom: 2rem; right: 2rem; background: var(--surface); border: 1px solid var(--accent); border-radius: 10px; padding: 1rem 1.5rem; font-size: 0.88rem; z-index: 300; transform: translateY(100px); opacity: 0; transition: all .3s; display: flex; align-items: center; gap: 0.7rem; box-shadow: 0 8px 32px rgba(0,0,0,0.12); }
+    .toast.show { transform: translateY(0); opacity: 1; }
+    @media (max-width: 768px) { .footer-grid { grid-template-columns: 1fr 1fr; } .products-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); } }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="home.html" class="logo">Circuit<span>Hive</span></a>
+    <div class="search-bar">
+      <input type="text" id="searchInput" placeholder="Search microcontrollers...">
+      <button onclick="handleSearch()">⌕</button>
+    </div>
+    <div class="nav-links">
+      <a href="home.html">Home</a>
+      <a href="shop.html">Shop</a>
+      <a href="about.html">About</a>
+      <a href="cart.html" class="cart-btn">🛒 Cart <span class="badge" id="cartBadge">0</span></a>
+    </div>
+  </nav>
+
+  <div class="cat-bar">
+    <a href="allproducts.html">All Products</a>
+    <a href="microcontrollers.html" class="active">Microcontrollers</a>
+    <a href="sensors.html">Sensors</a>
+    <a href="motors.html">Motors & Drivers</a>
+    <a href="power.html">Power & Batteries</a>
+    <a href="displays.html">Displays</a>
+    <a href="wireless.html">Wireless Modules</a>
+    <a href="tools.html">Tools</a>
+    <a href="kits.html">Starter Kits</a>
+  </div>
+
+  <div class="page-header">
+    <h1>Micro<span>controllers</span></h1>
+  </div>
+
+  <section class="products-section">
+    <div class="products-grid" id="productsGrid"></div>
+  </section>
+
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-brand"><a class="logo" href="home.html">Circuit<span>Hive</span></a><p>India's fastest-growing electronics & robotics parts store.</p></div>
+      <div class="footer-col"><h4>QUICK LINKS</h4><ul><li><a href="home.html">Home</a></li><li><a href="shop.html">Shop</a></li><li><a href="allproducts.html">All Products</a></li></ul></div>
+      <div class="footer-col"><h4>SUPPORT</h4><ul><li><a href="#">Track Order</a></li><li><a href="#">Returns</a></li><li><a href="#">FAQ</a></li></ul></div>
+      <div class="footer-col"><h4>CONTACT</h4><ul><li>📧 support@circuithive.in</li><li>📞 +91 98765 43210</li><li>📍 Pune, India</li></ul></div>
+    </div>
+    <div class="footer-bottom"><span>© 2025 CircuitHive. All rights reserved.</span><span>Made with ❤️ in India 🇮🇳</span></div>
+  </footer>
+
+  <div class="toast" id="toast"><span>✅</span><span id="toastMsg">Added to cart!</span></div>
+
+  <script>
+    const products = [
+      { id:1, name:"Arduino Uno R3", cat:"microcontrollers", emoji:"🔵", price:549, orig:699, rating:4.8, reviews:1240, badge:"BESTSELLER", desc:"The classic Arduino Uno R3 with ATmega328P.", stock:85 },
+      { id:2, name:"ESP32 DevKit V1", cat:"microcontrollers", emoji:"🟢", price:349, orig:499, rating:4.9, reviews:2180, badge:"HOT", desc:"Dual-core WiFi + Bluetooth microcontroller.", stock:62 },
+      { id:3, name:"Raspberry Pi 5 (4GB)", cat:"microcontrollers", emoji:"🍓", price:5499, orig:5999, rating:4.9, reviews:876, badge:"NEW", desc:"The latest Raspberry Pi 5.", stock:20 }
+    ];
+
+    let cart = JSON.parse(localStorage.getItem('circuithive_cart') || '[]');
+    
+    function saveCart() { localStorage.setItem('circuithive_cart', JSON.stringify(cart)); updateCartBadge(); }
+    function updateCartBadge() { const count = cart.reduce((s, c) => s + c.qty, 0); const badge = document.getElementById('cartBadge'); if (badge) badge.textContent = count; }
+    function showToast(msg) { const toast = document.getElementById('toast'); const toastMsg = document.getElementById('toastMsg'); if (toast && toastMsg) { toastMsg.textContent = msg; toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 2800); } }
+    function addToCart(event, id) { event.stopPropagation(); const product = products.find(p => p.id === id); const existing = cart.find(c => c.id === id); if (existing) existing.qty++; else cart.push({ ...product, qty: 1 }); saveCart(); const btn = document.getElementById('btn-' + id); if (btn) { btn.textContent = '✓ ADDED'; btn.classList.add('added'); setTimeout(() => { btn.textContent = 'ADD TO CART'; btn.classList.remove('added'); }, 1500); } showToast(`${product.name} added to cart!`); }
+    function wishlist(event, id) { event.stopPropagation(); const product = products.find(p => p.id === id); showToast(`💖 ${product.name} added to wishlist!`); event.target.textContent = '♥'; event.target.style.color = '#e67e22'; }
+    function renderProducts() { const grid = document.getElementById('productsGrid'); if (!grid) return; grid.innerHTML = products.map(p => { const discount = p.orig ? Math.round((1 - p.price / p.orig) * 100) : 0; return `<div class="product-card" onclick="alert('${p.name}\\nPrice: ₹${p.price}\\n${p.desc}')"><div class="product-img">${p.badge ? `<span class="product-badge ${p.badge === 'NEW' ? 'new' : (p.badge === 'BESTSELLER' ? 'bestseller' : '')}">${p.badge}</span>` : ''}<button class="product-wishlist" onclick="wishlist(event, ${p.id})">♡</button><span style="font-size:3.5rem">${p.emoji}</span></div><div class="product-info"><div class="product-cat">${p.cat.toUpperCase()}</div><div class="product-name">${p.name}</div><div class="product-rating"><span class="stars">${'★'.repeat(Math.floor(p.rating))}${'☆'.repeat(5 - Math.floor(p.rating))}</span><span class="rating-count">${p.rating} (${p.reviews.toLocaleString()})</span></div><div class="product-price"><span class="price-curr">₹${p.price.toLocaleString('en-IN')}</span>${p.orig ? `<span class="price-orig">₹${p.orig.toLocaleString('en-IN')}</span><span class="price-off">-${discount}%</span>` : ''}</div><button class="add-to-cart" id="btn-${p.id}" onclick="addToCart(event, ${p.id})">ADD TO CART</button></div></div>`; }).join(''); }
+    function handleSearch() { const query = document.getElementById('searchInput').value.toLowerCase().trim(); if (!query) { renderProducts(); return; } const filtered = products.filter(p => p.name.toLowerCase().includes(query) || p.desc.toLowerCase().includes(query)); const grid = document.getElementById('productsGrid'); if (!filtered.length) grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:3rem;">No products found</div>'; else grid.innerHTML = filtered.map(p => `<div class="product-card">...</div>`).join(''); renderProducts = () => {}; renderProducts(); }
+    document.getElementById('searchInput')?.addEventListener('keydown', (e) => { if (e.key === 'Enter') handleSearch(); });
+    renderProducts(); updateCartBadge();
+  </script>
+</body>
+</html>
